@@ -11,7 +11,7 @@
     </parent>
 
 
-    <groupId>com.food.ordering.sytem</groupId>
+    <groupId>com.food.ordering.system</groupId>
     <artifactId>food-ordering-system</artifactId>
     <version>1.0-SNAPSHOT</version>
 
