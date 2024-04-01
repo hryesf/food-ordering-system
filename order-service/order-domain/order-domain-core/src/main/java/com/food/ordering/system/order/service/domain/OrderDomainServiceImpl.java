@@ -1,6 +1,7 @@
 package com.food.ordering.system.order.service.domain;
 
 import com.food.ordering.system.order.service.domain.entity.Order;
+import com.food.ordering.system.order.service.domain.entity.OrderItem;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent;
@@ -11,12 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class OrderDomainServiceImpl implements OrderDomainService {
 
     private static final String UTC = "UTC";
+
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
         validateRestaurant(restaurant);
@@ -53,7 +57,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
         log.info("Order with id : {} is cancelled", order.getId().getValue());
     }
 
-    private void setOrderProductInformation(Order order, Restaurant restaurant) {
+    /*private void setOrderProductInformation(Order order, Restaurant restaurant) {
         order.getItems().forEach(orderItem ->
                 restaurant.getProducts().forEach(restaurantProduct -> {
                     Product currentProduct = orderItem.getProduct();
@@ -61,6 +65,21 @@ public class OrderDomainServiceImpl implements OrderDomainService {
                         currentProduct.updateWithConfirmedNameAndPrice(restaurantProduct.getName(), restaurantProduct.getPrice());
                     }
                 }));
+    }*/
+
+    private void setOrderProductInformation(Order order, Restaurant restaurant) {
+        Map<String, Product> restaurantProductMap = new HashMap<>();
+        for (Product product : restaurant.getProducts()) {
+            restaurantProductMap.put(product.getName(), product);
+        }
+
+        for (OrderItem orderItem : order.getItems()) {
+            Product currentProduct = orderItem.getProduct();
+            Product restaurantProduct = restaurantProductMap.get(currentProduct.getName());
+            if (currentProduct.equals(restaurantProduct)) {
+                currentProduct.updateWithConfirmedNameAndPrice(restaurantProduct.getName(), restaurantProduct.getPrice());
+            }
+        }
     }
 
     private void validateRestaurant(Restaurant restaurant) {
