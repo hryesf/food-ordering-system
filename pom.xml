@@ -23,6 +23,7 @@
         <module>order-service/order-dataaccess</module>
         <module>order-service/order-container</module>
         <module>order-service/order-messaging</module>
+        <module>common</module>
     </modules>
 
     <properties>
